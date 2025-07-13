@@ -35,3 +35,19 @@ Repo:
 GitHub repository: alx-backend-caching_property_listings
 File: alx-backend-caching_property_listings/settings.py, docker-compose.yaml, properties/models.py,
 ```
+
+```bash
+1. Cache Property List View
+
+Objective
+Cache the property list view’s response in Redis for 15 minutes.
+
+Instructions
+Create a property_list view in properties/views.py to return all properties.
+Apply @cache_page(60 * 15)to cache the response in Redis.
+Map the view to /properties/ via URL configuration.
+
+Repo:
+GitHub repository: alx-backend-caching_property_listings
+File: properties/views.py, properties/urls.py, alx_backend_caching_property_listings/urls.py
+```
