@@ -79,6 +79,7 @@ Instructions
     Create properties/signals.py with post_save and post_delete signal handlers that call cache.delete('all_properties').
     In properties/apps.py, override ready() to import signals.py.
     Update properties/__init__.py for the app config.
+
 Repo:
     GitHub repository: alx-backend-caching_property_listings
     File: properties/signals.py, properties/apps.py, properties/__init__.py
