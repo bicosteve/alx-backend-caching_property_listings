@@ -9,14 +9,21 @@ services:
       - POSTGRES_PASSWORD=property_password
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - backend-caching
 
   redis:
-    image: redis:lates
+    image: redis:latest
     ports:
       - '6379:6379'
+    volumes:
+      - redis_data:/var/lib/redis/data
+    networks:
+      - backend-caching
 
 volumes:
   postgres_data:
+  redis_data:
 
 networks:
   backend-caching:
