@@ -1,19 +1,39 @@
 services:
+  app:
+    build: .
+    command: >
+      sh -c "
+        echo 'Collecting static files ...' && 
+        python manage.py collectstatic --noinput &&
+        echo 'Starting Gunicorn ...' &&
+        gunicorn alx_backend_caching_property_listings.wsgi:application --bind 0.0.0.0:8000
+      "
+    #  |
+    #   gunicorn \
+    #   alx_backend_caching_property_listings.wsgi:application \
+    #   --bind 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - '8000:8000'
+    depends_on:
+      - redis
+      - postgres
   postgres:
     image: postgres:latest
     ports:
       - '5432:5432'
     environment:
-      - POSTGRES_DB=property_db
-      - POSTGRES_USER=property_user
-      - POSTGRES_PASSWORD=property_password
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - backend-caching
 
   redis:
-    image: redis:latest
+    image: redis:7-alpine
     ports:
       - '6379:6379'
     volumes:

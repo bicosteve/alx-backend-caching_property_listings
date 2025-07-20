@@ -10,10 +10,19 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
+import environ
+
 from pathlib import Path
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+
+env = environ.Env(DEBUG=(bool, False))
+
+environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
 
 # Quick-start development settings - unsuitable for production
@@ -40,6 +49,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "django_redis",
     "properties",
+    "drf_yasg",
 ]
 
 MIDDLEWARE = [
@@ -85,11 +95,11 @@ WSGI_APPLICATION = "alx_backend_caching_property_listings.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "property_db",
-        "USER": "property_user",
-        "PASSWORD": "property_pass",
-        "HOST": "localhost",
-        "PORT": "5432",
+        "NAME": env("DB_NAME"),
+        "USER": env("DB_USER"),
+        "PASSWORD": env("DB_PASSWORD"),
+        "HOST": env("DB_HOST", default="postgres"),
+        "PORT": env("DB_PORT", default="5432"),
     }
 }
 
@@ -137,13 +147,24 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
 # Redis
-
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://redis:6379/1",
+        "LOCATION": "redis://redis:6379/0",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         },
     }
+}
+
+CELERY_BROKER_URL = f"redis://{env('REDIS_HOST', default='redis')}:{env('REDIS_PORT', default='6379')}/0"
+CELERY_RESULT_BACKEND = CELERY_BROKER_URL
+
+
+STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+
+SWAGGER_SETTINGS = {
+    "USE_SESSION_AUTH": False,
+    "JSON_EDITOR": True,
 }

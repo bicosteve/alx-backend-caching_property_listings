@@ -6,3 +6,9 @@ migrations:
 
 migrate:
 	python manage.py migrate
+
+container:
+	docker compose up -d
+
+build:
+	docker compose build --no-cache
